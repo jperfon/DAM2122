@@ -1,4 +1,52 @@
-	public void escrituraBinaria() {
+import java.io.BufferedReader;
+import java.io.EOFException;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.util.Arrays;
+import java.util.Scanner;
+
+public class testFiles {
+
+	public static void main(String[] args) {
+
+		
+		
+	}
+	public static void escrituraBinariaObjeto() {
+		/*
+		 * 
+		 * Escribir en archivo.dat los valores de un array de 10 enteros
+		 * 
+		 * 
+		 * */
+		int[] tabla= {3,4,5,67,1,7,5,1,10,23};
+		ObjectOutputStream archivoEscritura=null;
+		try {
+
+			FileOutputStream flujoBytes=new FileOutputStream("archivo.dat");
+		    archivoEscritura=new ObjectOutputStream(flujoBytes);
+		    archivoEscritura.writeObject(tabla);
+		
+		}catch(Exception ex)
+		{
+			
+		}finally {
+			if(archivoEscritura!=null) {
+				try {
+					archivoEscritura.close();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}	
+		
+	}
+	public static void escrituraBinaria10Enteros() {
 		/*
 		 * 
 		 * Escribir en archivo.dat los valores de un array de 10 enteros
@@ -29,3 +77,63 @@
 				}
 			}
 	}
+	
+	public static void lecturaTablaEnteros() {
+		
+	try(ObjectInputStream  archivoLectura=new ObjectInputStream(new FileInputStream("archivo.dat"))) {
+		int[] tabla=(int[])archivoLectura.readObject();
+		System.out.println(Arrays.toString(tabla));	
+		
+		}catch(Exception ex) {
+			
+		}
+	}
+	public static void lecturaHastaFinFichero() {
+		try(ObjectInputStream  archivoLectura=new ObjectInputStream(new FileInputStream("archivo.dat"))) {
+			while(true) {
+				System.out.println(archivoLectura.readInt());		
+			}
+			}catch(Exception ex) {
+				
+			}		
+	}
+	/*
+	 * Escribir en el fichero numeros.dat una serie de números enteros positivos introducidos
+	 * por teclado. La serie acabará cuando escribamos -1. Abrir de nuevo numeros.dat para lectura y leer
+	 * todos los números hasta el final del fichero, mostrándolos por pantalla y copiándolos en un segundo
+	 * fichero llamado CopiaNumeros.dat
+	 */
+	public static void escrituraNumerosEnteros() {
+		
+		try(ObjectOutputStream escritura=new ObjectOutputStream(new FileOutputStream("numeros.dat"))){
+			
+			int numeroLeido=0;
+			do {
+			System.out.println("Introduce un número entero: ");
+			Scanner sc=new Scanner(System.in);
+			numeroLeido=sc.nextInt();
+				if(numeroLeido>=0) {
+				escritura.writeInt(numeroLeido);
+				}
+			}while(numeroLeido>=0);
+		}catch(IOException ex) {
+			System.out.println("Fin del fichero");
+		}
+		
+		try(ObjectInputStream lectura=new ObjectInputStream(new FileInputStream("numeros.dat"));
+			ObjectOutputStream escritura=new ObjectOutputStream(new FileOutputStream("CopiaNumeros.dat"))){
+			int numero;
+			while(true) {
+				numero=lectura.readInt();
+				System.out.println(numero);
+				escritura.writeInt(numero);
+			}
+			
+		}catch(EOFException ex) {
+			System.out.println("Fin del fichero");
+		}catch(IOException ex) {
+			System.out.println("Fin del fichero");
+		}
+	}
+}
+
