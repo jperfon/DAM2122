@@ -1,0 +1,31 @@
+	public void escrituraBinaria() {
+		/*
+		 * 
+		 * Escribir en archivo.dat los valores de un array de 10 enteros
+		 * 
+		 * 
+		 * */
+			int[] tabla= {3,4,5,67,1,7,5,1,10,23};
+			ObjectOutputStream archivoEscritura=null;
+			try {
+
+				FileOutputStream flujoBytes=new FileOutputStream("archivo.dat");
+			    archivoEscritura=new ObjectOutputStream(flujoBytes);
+				for(int n:tabla) {
+					archivoEscritura.writeInt(n);
+				}
+			
+			}catch(Exception ex)
+			{
+				
+			}finally {
+				if(archivoEscritura!=null) {
+					try {
+						archivoEscritura.close();
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+			}
+	}
