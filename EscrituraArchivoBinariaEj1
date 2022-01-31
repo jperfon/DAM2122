@@ -1,3 +1,4 @@
+package tareasClase;
 import java.io.BufferedReader;
 import java.io.EOFException;
 import java.io.FileInputStream;
@@ -9,12 +10,32 @@ import java.io.ObjectOutputStream;
 import java.util.Arrays;
 import java.util.Scanner;
 
-public class testFiles {
+public class tareasClase {
 
 	public static void main(String[] args) {
-
+		
+	Cliente[] clientes =new Cliente[2];
+	clientes[0]=new Cliente("Marcos Pérez","711555555k",1785);
+	clientes[1]=new Cliente("Luis Martin","711555345k",5000);
+	try(ObjectOutputStream escritura=new ObjectOutputStream(new FileOutputStream("C:\\Users\\Jose Antonio\\Desktop\\clientes.dat"))) {
+		
+		escritura.writeObject(clientes);
+		
+		}catch(Exception ex) {
+			
+		}
+	
+	try(ObjectInputStream lectura=new ObjectInputStream(new FileInputStream("C:\\Users\\Jose Antonio\\Desktop\\clientes.dat"))) {
 		
 		
+		Cliente[] clientesLeidos=(Cliente[])lectura.readObject();
+		
+		System.out.println(Arrays.deepToString(clientesLeidos));
+		
+		
+		}catch(Exception ex) {
+			System.out.println(ex.toString());
+		}
 	}
 	public static void escrituraBinariaObjeto() {
 		/*
@@ -88,11 +109,15 @@ public class testFiles {
 			
 		}
 	}
+	
 	public static void lecturaHastaFinFichero() {
 		try(ObjectInputStream  archivoLectura=new ObjectInputStream(new FileInputStream("archivo.dat"))) {
 			while(true) {
-				System.out.println(archivoLectura.readInt());		
+				System.out.println(archivoLectura.readInt());
 			}
+			}catch(EOFException ex) {
+				System.out.println("fin del fichero");
+			
 			}catch(Exception ex) {
 				
 			}		
@@ -108,9 +133,10 @@ public class testFiles {
 		try(ObjectOutputStream escritura=new ObjectOutputStream(new FileOutputStream("numeros.dat"))){
 			
 			int numeroLeido=0;
+			Scanner sc=null;
 			do {
 			System.out.println("Introduce un número entero: ");
-			Scanner sc=new Scanner(System.in);
+			sc=new Scanner(System.in);
 			numeroLeido=sc.nextInt();
 				if(numeroLeido>=0) {
 				escritura.writeInt(numeroLeido);
@@ -136,4 +162,3 @@ public class testFiles {
 		}
 	}
 }
-
