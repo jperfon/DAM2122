@@ -1,0 +1,14 @@
+import java.util.Comparator;
+
+public class OrdenaNombres implements Comparator{
+	
+	@Override
+	public int compare(Object obj1, Object obj2) {
+		int resultado=0;
+		Cliente cliente1=(Cliente)obj1;
+		Cliente cliente2=(Cliente)obj2;
+		
+		resultado=cliente1.getNombre().compareTo(cliente2.getNombre());
+		return resultado;	
+	}
+}
