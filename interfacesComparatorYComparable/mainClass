@@ -1,0 +1,41 @@
+import java.util.Arrays;
+import java.util.Collections;
+
+public class mainClass {
+
+	public static void main(String[] args) {
+	
+		Cliente[] arrayClientes=new Cliente[9];
+		
+		
+		arrayClientes[0]=new Cliente("Carlos",25);
+		arrayClientes[1]=new Cliente("Maria",12);
+		arrayClientes[2]=new Cliente("Maria",20);
+		arrayClientes[3]=new Cliente("Laura",50);
+		arrayClientes[4]=new Cliente("Laura",45);
+		arrayClientes[5]=new Cliente("Laura",55);
+		arrayClientes[6]=new Cliente("Zahir",60);
+		arrayClientes[7]=new Cliente("David",26);		
+		arrayClientes[8]=new Cliente("Juanjo",22);
+		
+		System.out.println(Arrays.deepToString(arrayClientes));
+		
+		//Arrays.sort(arrayClientes);
+		//System.out.println(Arrays.deepToString(arrayClientes));
+		
+		
+		OrdenaEdades comparadorEdades=new OrdenaEdades();
+		OrdenaNombres comparadorNombres=new OrdenaNombres();
+		
+		
+		//De tipo Comparator
+		Arrays.sort(arrayClientes,comparadorEdades);
+		
+		
+		System.out.println(Arrays.deepToString(arrayClientes));
+		
+	int valor=	Arrays.binarySearch(arrayClientes,new Cliente("marcos",45));
+	System.out.println(valor);
+	}
+
+}
