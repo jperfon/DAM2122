@@ -1,0 +1,185 @@
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.Scanner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+public class ClientesBanco {
+
+	
+	private Cliente[] clientes;
+	private Scanner teclado;
+	private String ruta="C:\\Users\\Jose Antonio\\Desktop\\datosClientes.txt";
+	
+	public void menuPrincipal() {
+		
+		int opcion;
+		clientes=new Cliente[0];
+		teclado=new Scanner(System.in);
+		cargarClientes();
+		Arrays.sort(clientes);
+		System.out.println(clientes.length+" clientes leidos");
+		do {
+			
+			System.out.println("1-Alta cliente");
+			System.out.println("2-Baja cliente");
+			System.out.println("3-Mostrar clientes");
+			System.out.println("4-Guardar y salir");
+			opcion=teclado.nextInt();
+			
+			switch(opcion) {
+			case 1:
+				altaCliente();
+			break;	
+			case 2:
+				bajaCliente();
+			break;
+			case 3:
+				mostrarClientes();
+			break;
+			case 4:
+				guardarClientes();
+			break;
+			}
+		}while(opcion!=4);		
+	}	
+	private void cargarClientes() {
+		//dni;nombre;fecha;saldo
+		File archivo= new File(ruta);
+		
+		if(archivo.exists()==false) {
+			try {
+				archivo.createNewFile();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		try(BufferedReader lectura=new BufferedReader(new FileReader(ruta))){
+			
+			String linea;
+			String[] partesLinea;
+			while((linea=lectura.readLine())!=null) {
+				partesLinea=linea.split(";");
+				clientes=Arrays.copyOf(clientes, clientes.length+1);
+				clientes[clientes.length-1]=new Cliente(partesLinea[0],partesLinea[1],partesLinea[2],Double.parseDouble(partesLinea[3]));
+			}	
+		}catch(IOException ex) {
+			System.out.println(ex.toString()+" problemas al leer el archivo");
+		}
+		
+	}
+	private void guardarClientes() {
+		
+		
+		try(BufferedWriter escritura=new BufferedWriter(new FileWriter(ruta))){
+			
+			for(Cliente cliente:clientes) {
+			//dni;nombre;fechaNacimiento;saldo	
+				escritura.write(cliente.getDNI()+";"+cliente.getNombre()+";"+cliente.getFechaNacimiento()+";"+cliente.getSaldo());
+				escritura.newLine();
+			}
+			
+		}catch(IOException ex) {
+			System.out.println(ex.toString()+" problemas al guardar clientes");
+		}
+	}
+	
+	private void altaCliente() {
+		String dni,nombre,fechaNacimiento;
+		double saldo;
+		
+		dni=getDNI();
+		
+		System.out.println("Introduce el nombre del cliente:");
+		nombre=teclado.nextLine();
+		fechaNacimiento=getFechaNacimiento();
+		System.out.println("Introduce el saldo:");
+		saldo=teclado.nextDouble();	
+		
+		//aumentamos el tamaño del array en una unidad al final
+		
+
+		int posicion=Arrays.binarySearch(clientes, new Cliente(dni,nombre,fechaNacimiento,0));
+		
+		clientes=Arrays.copyOf(clientes, clientes.length+1);
+		
+		posicion=Math.abs(posicion)-1;
+		
+		System.out.println("Insertar en posicion: "+posicion);
+		
+		//Movemos todos los clientes a la derecha de posicion una posició nhacia la derecha
+		for(int i=clientes.length-2;i>posicion;i--) {
+			clientes[i+1]=clientes[i];
+		}				
+		
+		//Hago la inserción ordenada
+		clientes[posicion]=new Cliente(dni,nombre,fechaNacimiento,saldo);
+
+		System.out.println(Arrays.deepToString(clientes));
+		System.out.println("Cliente creado");
+	}
+	public void bajaCliente() {
+		
+		String dni=getDNI();
+		
+		int posicion=Arrays.binarySearch(clientes, new Cliente(dni," "," ", 0));
+		if(posicion>=0) {
+		//posicion=Math.abs(posicion)-1;
+		//Ya tenemos la posición del elemento a eliminar.
+		//sobreescribimos el cliente a eliminar.
+		for(int i=posicion;i<clientes.length-1;i++) {
+			
+			clientes[posicion]=clientes[posicion+1];	
+		}
+		clientes=Arrays.copyOf(clientes,clientes.length-1);	}
+		else {
+			System.out.println("El cliente con DNI "+dni+" no existe");
+		}
+	}
+	private void mostrarClientes() {
+		
+		for(Cliente cliente:clientes) {
+			System.out.println(cliente.toString());
+		}
+	}
+	
+	private String getDNI(){
+		String dni="";
+		
+		Pattern patron=Pattern.compile("^[0-9]{8}[A-Z]{1}$");	
+		Matcher match;
+		teclado.nextLine();
+		do {
+			
+			System.out.println("Introduce el dni: ");
+			dni=teclado.nextLine();
+			match=patron.matcher(dni);	
+			
+		}while(match.matches()==false);
+		
+		return dni;
+		
+	}
+	
+	private String getFechaNacimiento(){
+		String fechaNacimiento="";
+		//  dd/mm/yyyy
+		Pattern patron=Pattern.compile("^[0-3][0-9]\\/[0-1][0-9]\\/[1-2][0-9]{3}$");	
+		Matcher match;
+		do {
+			
+			System.out.println("Introduce la fecha de nacimiento: ");
+			fechaNacimiento=teclado.nextLine();
+			match=patron.matcher(fechaNacimiento);	
+			
+		}while(match.matches()==false);
+		return fechaNacimiento;
+		
+	}
+}
